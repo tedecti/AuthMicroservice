@@ -3,7 +3,6 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
-    container_name: pgsql
     environment:
       POSTGRES_USER: marketadmin
       POSTGRES_PASSWORD: psswrd
