@@ -29,6 +29,10 @@ namespace AuthMicroservice.Controllers
         public async Task<IActionResult> Login(UserDto userDto)
         {
             var user = await _authRepository.Login(userDto);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
             return Ok(user);
         }
     }
