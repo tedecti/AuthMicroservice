@@ -9,6 +9,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.WebHost.UseUrls("http://localhost:8081");
         builder.Services.AddDbContext<AuthDbContext>();
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
         
@@ -27,8 +28,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
-
+        
         app.MapControllers();
 
         app.Run();

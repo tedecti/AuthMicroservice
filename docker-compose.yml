@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: pgsql
+    environment:
+      POSTGRES_USER: marketadmin
+      POSTGRES_PASSWORD: psswrd
+      POSTGRES_DB: authmarket
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+  auth_microservice:
+    image: authmicroservice:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - backend-network
+
+volumes:
+  postgres_data:
+    
+networks:
+  backend-network:
+    driver: bridge
