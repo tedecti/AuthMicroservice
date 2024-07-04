@@ -5,17 +5,10 @@ namespace AuthMicroservice.Data;
 
 public class AuthDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-
-    public AuthDbContext(IConfiguration configuration)
+    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     {
-        _configuration = configuration;
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("AuthDb"));
-    }
+    public AuthDbContext() {}
 
     public DbSet<User> Users { get; set; } = default!;
 }

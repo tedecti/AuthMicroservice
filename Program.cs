@@ -4,6 +4,7 @@ using AuthMicroservice.Data;
 using AuthMicroservice.Repositories;
 using AuthMicroservice.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthMicroservice;
@@ -14,9 +15,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.WebHost.UseUrls("http://localhost:8081");
-        builder.Services.AddDbContext<AuthDbContext>();
+        builder.Services.AddDbContext<AuthDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("AuthDb")));
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-        
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -46,7 +47,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-        
+
         app.MapControllers();
 
         app.Run();
