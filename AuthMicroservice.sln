@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# 
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthMicroservice", "AuthMicroservice.csproj", "{FEE3D4D8-8EB5-401A-9D80-32E2991EFBA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthMicroservice.Tests", "AuthMicroservice.Tests\AuthMicroservice.Tests.csproj", "{E962EFF0-E481-4500-AF92-6F5CC1971F15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +15,9 @@ Global
 		{FEE3D4D8-8EB5-401A-9D80-32E2991EFBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE3D4D8-8EB5-401A-9D80-32E2991EFBA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE3D4D8-8EB5-401A-9D80-32E2991EFBA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E962EFF0-E481-4500-AF92-6F5CC1971F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E962EFF0-E481-4500-AF92-6F5CC1971F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E962EFF0-E481-4500-AF92-6F5CC1971F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E962EFF0-E481-4500-AF92-6F5CC1971F15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
