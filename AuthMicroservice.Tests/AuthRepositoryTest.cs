@@ -86,7 +86,7 @@ public class AuthRepositoryTest
     }
 
     [Fact]
-    public async Task Login_ThrowsException_ForInvalidEmail()
+    public async Task Login_ReturnsNull_ForInvalidEmail()
     {
         // Arrange
         var options = new DbContextOptionsBuilder<AuthDbContext>()
@@ -95,13 +95,28 @@ public class AuthRepositoryTest
         var context = new AuthDbContext(options);
 
         // Act
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = "test@example.com",
+            Name = "Test User",
+            Password = BCrypt.Net.BCrypt.HashPassword("password", 12),
+            UserType = "Seller"
+        };
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+
         var userDto = new UserDto { Email = "invalid@example.com", Password = "password" };
         var repository = new AuthRepository(context, _mockConfiguration.Object);
-        
+        var findValidUser = await context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+        var findInvalidUser = await context.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
+
         var result = await repository.Login(userDto);
 
         // Assert
         Assert.Null(result);
+        Assert.NotNull(findValidUser);
+        Assert.Null(findInvalidUser);
     }
 
     [Fact]
@@ -120,10 +135,11 @@ public class AuthRepositoryTest
             Email = "test@example.com",
             Name = "Test User",
             Password = BCrypt.Net.BCrypt.HashPassword("password", 12),
-            UserType = "User"
+            UserType = "Seller"
         };
         context.Users.Add(user);
         await context.SaveChangesAsync();
+
 
         var userDto = new UserDto { Email = "test@example.com", Password = "wrongpassword" };
         var repository = new AuthRepository(context, _mockConfiguration.Object);
@@ -142,7 +158,7 @@ public class AuthRepositoryTest
             .Returns("mockedsecretstringofvalue128bits");
         _mockConfiguration.Setup(x => x.GetSection("SecretKey"))
             .Returns(_mockConfigurationSection.Object);
-        
+
         // Act
         var user = new User
         {
