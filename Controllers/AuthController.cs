@@ -20,20 +20,34 @@ namespace AuthMicroservice.Controllers
         [Route("signup")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
-            var newUser = await _authRepository.Register(user);
-            return Ok(newUser);
+            try
+            {
+                var newUser = await _authRepository.Register(user);
+                return Ok(newUser);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
-        
+
         [HttpPost]
         [Route("signin")]
         public async Task<IActionResult> Login(UserDto userDto)
         {
-            var user = await _authRepository.Login(userDto);
-            if (user == null)
+            try
             {
-                return Unauthorized();
+                var user = await _authRepository.Login(userDto);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+                return Ok(user);
             }
-            return Ok(user);
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }
