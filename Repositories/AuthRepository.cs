@@ -35,7 +35,7 @@ public class AuthRepository : IAuthRepository
         return newUser;
     }
 
-    public async Task<string> Login(UserDto userDto)
+    public async Task<string?> Login(UserDto userDto)
     { 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
         if (user == null || string.IsNullOrEmpty(userDto.Password) || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.Password))
