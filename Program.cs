@@ -3,6 +3,7 @@ using System.Text;
 using AuthMicroservice.Data;
 using AuthMicroservice.Repositories;
 using AuthMicroservice.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,11 +19,18 @@ public class Program
         builder.Services.AddDbContext<AuthDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("AuthDb")));
         builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         var key = builder.Configuration.GetValue<string>("SecretKey");
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -31,10 +39,17 @@ public class Program
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key!))
                 };
+            })
+            .AddCookie()
+            .AddGoogle(options =>
+            {
+                options.ClientId = builder.Configuration.GetValue<string>("OAuthSettings:ClientId")!;
+                options.ClientSecret = builder.Configuration.GetValue<string>("OAuthSettings:ClientSecret")!;
+                // options.CallbackPath = "/api/auth/google-callback";
+                options.SaveTokens = true;
             });
-
 
         var app = builder.Build();
 
@@ -46,6 +61,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
