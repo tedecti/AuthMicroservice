@@ -6,4 +6,5 @@ public interface IAuthRepository
 {
     Task<User> Register(User user);
     Task<string?> Login(UserDto userDto);
+    string GenerateJwtToken(User user);
 }
